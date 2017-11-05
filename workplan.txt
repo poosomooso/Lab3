@@ -1,3 +1,5 @@
+Bryan Werth, Joseph Lee, Serena Chen
+
 Workplan - 1 hour - Today!
 Verilog CPU design & test files
 	Single cycle - 3 hours - Done by Friday 11/10
