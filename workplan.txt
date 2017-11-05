@@ -1,0 +1,17 @@
+Workplan - 1 hour - Today!
+Verilog CPU design & test files
+	Single cycle - 3 hours - Done by Friday 11/10
+	Single cycle tests - 2 hours - Done by Saturday 11/11
+	Expand to pipelined - 1.5 hours - Done by Saturday 11/11
+	Testing and debugging for hazards - Done by Wednesday 11/15
+Assembly tests - 1.5 hours - Done by Monday 11/13
+Vivado synthesis - .5 hours - Done by Thursday 11/16
+Readme for assembly tests - .5 hours - Done by Monday 11/13
+	Expected results of the test
+  Any memory layout requirements (e.g. .data section)
+  Any instructions used outside the basic required subset (ok to use, but try to submit at least one test program everyone can run)
+Report - 1 hour - Done by Thursday 11/16
+  Written description and block diagram of your processor architecture. Consider including selected RTL to capture how instructions are implemented.
+  Description of your test plan and results
+  Some performance/area analysis of your design. This can be for the full processor, or a case study of choices made designing a single unit. It can be based on calculation, simulation, Vivado synthesis results, or a mix of all three.
+  Work plan reflection
