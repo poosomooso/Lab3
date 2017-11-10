@@ -1,10 +1,13 @@
+`timescale 1 ns / 1 ps
+`include "multiplexer.v"
+
 module testMux2input();
     reg addr;
     reg[31:0] in0;
     reg[31:0] in1;
     wire out;
 
-    Mux2input mux(out, addr, in0, in1);
+    Mux2input #(32) mux(out, addr, in0, in1);
 
     initial begin
     $display("addr inputs        | Output");

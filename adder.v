@@ -7,7 +7,7 @@ module adder1bit // 1 bit input adder
     input cin // carry in
 );
 
-	assign sum = ( (a^b^c) | (a&b&cin));
-	assign cout = ( cin & (a|b) ) | ( ~cin & (a&B) ) 
+	assign sum = ( ((a^b)^cin) | (a&b&cin) );
+	assign cout = ( cin & (a|b) ) | ( ~cin & (a&b) );
 
 endmodule
