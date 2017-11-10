@@ -1,17 +1,17 @@
 //Program counter for a cpu, implemented as a 32-bit d flip flop
-module program_counter
+module programCounter
 (
-output reg[31:0]    q,
-output reg[3:0]     last_four,
-input[31:0]         d,
+output reg[31:0]    currentCount,
+output reg[3:0]     lastFourBits,
+input[31:0]         newCount,
 input               wrenable,
 input               clk
 );
 
     always @(posedge clk) begin
         if(wrenable) begin
-            q = d;
-            last_four = d[31:28];
+            currentCount = newCount;
+            lastFourBits = newCount[31:28];
         end
     end
 
