@@ -8,7 +8,7 @@ module testRegister ();
 	reg write;
 	reg clk;
 
-	register #(32) reg32bit(q, in, write, clk);
+	register reg32bit(q, in, write, clk);
 
 	initial begin
     // initialization

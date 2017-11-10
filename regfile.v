@@ -7,6 +7,7 @@
 //------------------------------------------------------------------------------
 `include "decoders.v"
 `include "register.v"
+`include "multiplexer.v"
 
 module regfile
 (
@@ -27,17 +28,17 @@ input		Clk		// Clock (Positive Edge Triggered)
   wire[31:0] wrenable; // Enable writing of each register
   wire[31:0] regout[31:0];
 
-  decoder1to32 decoder(
+  decoder decoder(
   	.out(wrenable),
   	.enable(RegWrite), 
   	.address(WriteRegister)
   );
 
-  register32zero zero_register(regout[0], WriteData, wrenable[0], Clk);
+  registerZero zero_register(regout[0], WriteData, wrenable[0], Clk);
   generate
   	genvar i;
   	for (i=1; i<32; i=i+1) begin: generate_register
-  		register32 register32bit(
+  		register register32bit(
   			.q(regout[i]),
   			.d(WriteData),
   			.wrenable(wrenable[i]),
@@ -46,14 +47,14 @@ input		Clk		// Clock (Positive Edge Triggered)
   	end
   endgenerate
 
-  mux32to1by32 mux1(ReadData1, ReadRegister1,
+  mux32input mux1(ReadData1, ReadRegister1,
   	regout[0], regout[1], regout[2], regout[3], regout[4], regout[5], regout[6], regout[7], regout[8], regout[9], 
 	regout[10], regout[11], regout[12], regout[13], regout[14], regout[15], regout[16], regout[17], regout[18], regout[19], 
 	regout[20], regout[21], regout[22], regout[23], regout[24], regout[25], regout[26], regout[27], regout[28], regout[29], 
 	regout[30], regout[31]
   );
 
-  mux32to1by32 mux2(ReadData2, ReadRegister2,
+  mux32input mux2(ReadData2, ReadRegister2,
 	regout[0], regout[1], regout[2], regout[3], regout[4], regout[5], regout[6], regout[7], regout[8], regout[9], 
 	regout[10], regout[11], regout[12], regout[13], regout[14], regout[15], regout[16], regout[17], regout[18], regout[19], 
 	regout[20], regout[21], regout[22], regout[23], regout[24], regout[25], regout[26], regout[27], regout[28], regout[29], 

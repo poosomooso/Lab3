@@ -1,4 +1,4 @@
-module Mux2input // Multiplexer with 4 inputs (2 bits address)
+module mux2input // Multiplexer with 4 inputs (2 bits address)
 #(
     parameter width  = 32 // default width is 32 bit
 )
@@ -15,19 +15,88 @@ module Mux2input // Multiplexer with 4 inputs (2 bits address)
 	end
 endmodule
 
-module Mux4input // Multiplexer with 4 inputs (2 bits address)
+module mux4input // Multiplexer with 4 inputs (2 bits address)
 #(
     parameter width  = 32 // default width is 32 bit
 )
 (
-    output out,
-    input address0, address1,
-    input in0, in1, in2, in3
+    output[width-1:0] out,
+    input[1:0] address,
+    input[width-1:0] in0, in1, in2, in3
 );
     wire[width-1:0] out0;
     wire[width-1:0] out1;
 
-    Mux2input mux1(out0, address0, in0, in1);
-    Mux2input mux2(out1, address0, in2, in3);
-    Mux2input mux3(out, address1, out0, out1);
+    mux2input mux1(out0, address[0], in0, in1);
+    mux2input mux2(out1, address[0], in2, in3);
+    mux2input mux3(out, address[1], out0, out1);
+endmodule
+
+module mux8input // Multiplexer with 8 inputs (3 bits address)
+#(
+    parameter width  = 32 // default width is 32 bit
+)
+(
+    output[width-1:0] out,
+    input[2:0] address,
+    input[width-1:0] in0, in1, in2, in3, in4, in5, in6, in7
+);
+    wire[width-1:0] out0;
+    wire[width-1:0] out1;
+
+    mux4input mux1(out0, address[1:0], in0, in1, in2, in3);
+    mux4input mux2(out1, address[1:0], in4, in5, in6, in7);
+    mux2input mux3(out, address[2], out0, out1);
+endmodule
+
+module mux32input // Multiplexer with 32 inputs (5 bits address)
+#(
+    parameter width  = 32 // default width is 32 bit
+)
+(
+    output[width-1:0]  out,
+    input[4:0]   address,
+    input[width-1:0]  input0, input1, input2, input3, input4, input5, input6, input7, input8, input9,
+                 input10, input11, input12, input13, input14, input15, input16, input17, input18, input19,
+                 input20, input21, input22, input23, input24, input25, input26, input27, input28, input29,
+                 input30, input31
+);
+
+    wire[width-1:0] mux[31:0];    // Create a 2D array of wires
+    // assign 32 inputs
+    assign mux[0] = input0;
+    assign mux[1] = input1;
+    assign mux[2] = input2;
+    assign mux[3] = input3;
+    assign mux[4] = input4;
+    assign mux[5] = input5;
+    assign mux[6] = input6;
+    assign mux[7] = input7;
+    assign mux[8] = input8;
+    assign mux[9] = input9;
+    assign mux[10] = input10;
+    assign mux[11] = input11;
+    assign mux[12] = input12;
+    assign mux[13] = input13;
+    assign mux[14] = input14;
+    assign mux[15] = input15;
+    assign mux[16] = input16;
+    assign mux[17] = input17;
+    assign mux[18] = input18;
+    assign mux[19] = input19;
+    assign mux[20] = input20;
+    assign mux[21] = input21;
+    assign mux[22] = input22;
+    assign mux[23] = input23;
+    assign mux[24] = input24;
+    assign mux[25] = input25;
+    assign mux[26] = input26;
+    assign mux[27] = input27;
+    assign mux[28] = input28;
+    assign mux[29] = input29;
+    assign mux[30] = input30;
+    assign mux[31] = input31;
+
+    assign out = mux[address]; // Connect the output of the array
+
 endmodule
