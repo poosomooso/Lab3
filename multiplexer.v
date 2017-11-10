@@ -27,7 +27,7 @@ module Mux4input // Multiplexer with 4 inputs (2 bits address)
     wire[width-1:0] out0;
     wire[width-1:0] out1;
 
-    twoInputMux mux1(out0, address0, in0, in1);
-    twoInputMux mux2(out1, address0, in2, in3);
-    twoInputMux mux3(out, address1, out0, out1);
+    Mux2input mux1(out0, address0, in0, in1);
+    Mux2input mux2(out1, address0, in2, in3);
+    Mux2input mux3(out, address1, out0, out1);
 endmodule
