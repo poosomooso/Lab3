@@ -7,12 +7,10 @@ module mux2input // Multiplexer with 4 inputs (2 bits address)
 	input address,
 	input[width-1:0] in0, in1
 );
-	if (address == 0) begin
-		assign out = in0;
-	end
-	else begin
-		assign out = in1;
-	end
+    wire[width-1:0] mux[1:0];    // Create a 2D array of wires
+    assign mux[0] = in0;
+    assign mux[1] = in1;
+    assign out = mux[address];
 endmodule
 
 module mux4input // Multiplexer with 4 inputs (2 bits address)
@@ -27,9 +25,9 @@ module mux4input // Multiplexer with 4 inputs (2 bits address)
     wire[width-1:0] out0;
     wire[width-1:0] out1;
 
-    mux2input mux1(out0, address[0], in0, in1);
-    mux2input mux2(out1, address[0], in2, in3);
-    mux2input mux3(out, address[1], out0, out1);
+    mux2input #(width) mux1(out0, address[0], in0, in1);
+    mux2input #(width) mux2(out1, address[0], in2, in3);
+    mux2input #(width) mux3(out, address[1], out0, out1);
 endmodule
 
 module mux8input // Multiplexer with 8 inputs (3 bits address)
@@ -44,9 +42,9 @@ module mux8input // Multiplexer with 8 inputs (3 bits address)
     wire[width-1:0] out0;
     wire[width-1:0] out1;
 
-    mux4input mux1(out0, address[1:0], in0, in1, in2, in3);
-    mux4input mux2(out1, address[1:0], in4, in5, in6, in7);
-    mux2input mux3(out, address[2], out0, out1);
+    mux4input #(width) mux1(out0, address[1:0], in0, in1, in2, in3);
+    mux4input #(width) mux2(out1, address[1:0], in4, in5, in6, in7);
+    mux2input #(width) mux3(out, address[2], out0, out1);
 endmodule
 
 module mux32input // Multiplexer with 32 inputs (5 bits address)

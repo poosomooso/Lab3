@@ -60,7 +60,8 @@ module ALUunit // The bitslice ALU unit
 	assign muxinput[`OR] = bitA|bitB;
 	assign muxinput[`NOR] = ~muxinput[`OR];
 
-	mux8input mux(bitR, muxindex, muxinput);
+	mux8input #(1) mux(bitR, muxindex, muxinput[0], muxinput[1], muxinput[2], muxinput[3],
+									   muxinput[4], muxinput[5], muxinput[6], muxinput[7]);
 
 
 endmodule

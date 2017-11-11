@@ -3,22 +3,27 @@
 
 module testMux2input();
     reg addr;
-    reg[31:0] in0;
-    reg[31:0] in1;
-    wire out;
+    reg[31:0] in[31:0];
+    wire[31:0] out1, out2, out3;
 
-    Mux2input #(32) mux(out, addr, in0, in1);
+    mux2input mux(out1, addr, in[0], in[1]);
+    mux4input mux(out2, addr, in[0], in[1], in[2], in[3]);
 
     initial begin
-    $display("addr inputs        | Output");
-    addr=0; in0=32'hFFFF;in1=32'h0000; #1000
-    $display("%b    %b | %b", addr, in0, out);
-    addr=1; in0=32'hAB32;in1=32'h72C4; #1000
-    $display("%b    %b | %b", addr, in1, out);
-    addr=1; in0=32'h5555;in1=32'hAAAA; #1000
-    $display("%b    %b | %b", addr, in1, out);
-    addr=0; in0=32'h932B;in1=32'h0DC2; #1000
-    $display("%b    %b | %b", addr, in0, out);
+
+    $display("addr inputs                           | Output");
+    $display("Test multiplexer with 2 inputs");
+    addr=0; in[0]=32'hFFFFFFFF;in[1]=32'h00000000; #1000
+    $display("%b    %b | %b", addr, in[0], out1);
+    addr=1; in[0]=32'h144CAB32;in[1]=32'hA3C972C4; #1000
+    $display("%b    %b | %b", addr, in[1], out1);
+    addr=1; in[0]=32'h55555555;in[1]=32'hAAAAAAAA; #1000
+    $display("%b    %b | %b", addr, in[1], out1);
+    addr=0; in[0]=32'h18ED932B;in[1]=32'h714A0DC2; #1000
+    $display("%b    %b | %b", addr, in[0], out1);
+    
+    $display("Test multiplexer with 4 inputs");
+    
     end
 
 endmodule
