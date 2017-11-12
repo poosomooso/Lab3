@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps
 `include "adder.v"
 
-module testAdderr ();
+module testAdder ();
 
 	wire sum;
 	wire cout;

@@ -5,7 +5,7 @@
 //   2 asynchronous read ports
 //   1 synchronous, positive edge triggered write port
 //------------------------------------------------------------------------------
-`include "decoders.v"
+`include "decoder.v"
 `include "register.v"
 `include "multiplexer.v"
 
