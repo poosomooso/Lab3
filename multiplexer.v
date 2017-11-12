@@ -1,4 +1,4 @@
-module mux2input // Multiplexer with 4 inputs (2 bits address)
+module mux2input // Multiplexer with 2 inputs (1 bits address)
 #(
     parameter width  = 32 // default width is 32 bit
 )
