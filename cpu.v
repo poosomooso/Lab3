@@ -1,5 +1,6 @@
 //Single-cycle CPU implementation
-`include "memory.v"
+`include "instrMemory.v"
+`include "dataMemory.v"
 `include "programCounter.v"
 `include "regfile.v"
 `include "alu.v"
@@ -77,7 +78,7 @@ programCounter PC(PCOutput, PCLastFour, PCInput, 1, clk);
 mux2input adderMux1(adderMux1Out, branchControlOut, instrMemImm, PCOutput);
 mux2input adderMux2(adderMux2Out, AdderValControl,  32'd4, 32'd8);
 ALU adder(.result(adderOut), .operandA(adderMux1Out), .operandB(adderMux2Out), .command(3'd0));
-memory instrMem(.clk(clk), .Addr(PCOutput), .DataOut(instrMemOut), .regWE(0));
+instrMemory instrMem(.clk(clk), .Addr(PCOutput), .DataOut(instrMemOut), .regWE(0));
 mux4input registerMux1(.out(registerMux1Out), .address(RegDataWrSel), .in0(aluOut), .in1(dataMemOut), .in3(adderOut));
 mux4input registerMux2(.out(registerMux2Out), .address(RegAddrWrSel), .in0(rd), .in1(rt), .in3(5'd31));
 regfile register(.ReadData1(regOut1), .ReadData2(regOut2), .WriteData(registerMux1Out), .ReadRegister1(rs), .ReadRegister2(rt), .WriteRegister(registerMux2Out), .RegWrite(RegWrEn), .Clk(clk));
@@ -205,6 +206,6 @@ end
 
 ALU alu(.result(aluOut), .carryout(carryout), .zero(zero), .overflow(overflow), .operandA(regOut1), .operandB(aluMuxOut), .command(command));
 mux2input branchControlMux(branchControlOut, BranchControl, zero, 1'b0);
-memory dataMem(.clk(clk), .regWE(MemWrEn), .Addr(aluOut), .DataIn(regOut2), .DataOut(dataMemOut));
+dataMemory dataMem(.clk(clk), .regWE(MemWrEn), .Addr(aluOut), .DataIn(regOut2), .DataOut(dataMemOut));
 
 endmodule

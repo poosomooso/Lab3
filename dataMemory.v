@@ -1,4 +1,4 @@
-module memory
+module dataMemory
 (
   input clk, regWE,
   input[9:0] Addr,
@@ -14,7 +14,7 @@ module memory
     end
   end
   
-  initial $readmemh("file.dat", mem);
+  initial $readmemh("dataMemory.dat", mem);
     
   assign DataOut = mem[Addr];
 endmodule
