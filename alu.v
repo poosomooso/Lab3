@@ -8,7 +8,6 @@
 `define OR   3'd7
 
 `include "adder.v"
-`include "multiplexer.v"
 
 
 module ALUcontrolLUT // control Lookup Table within ALU unit
@@ -88,7 +87,7 @@ module lastALUunit // last ALU unit, which has an ALU unit with outputs of SLT v
 	wire slt_carryout;//not used variable
 	wire notB;//inverted B, used when the command is SLT 
 
-	adder1bit slt_adder(slt_result, add_carryout, bitA, ~bitB, carryin);
+	adder1bit slt_adder(slt_result, slt_carryout, bitA, ~bitB, carryin);
 	assign slt = slt_result^overflow;
 
 endmodule
