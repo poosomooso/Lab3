@@ -213,8 +213,9 @@ jr $ra
 
 
 done:
-addi $v0, $zero, 10
-syscall
+j done
+# addi $v0, $zero, 10
+# syscall
 
 .data
 array:
