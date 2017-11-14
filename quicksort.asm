@@ -1,25 +1,6 @@
 main:
-addi $t0, $zero, 9
-addi $t1, $zero, 5
-addi $t2, $zero, 3
-addi $t3, $zero, 6
-addi $t4, $zero, 2
-addi $t5, $zero, 8
-addi $t6, $zero, 7
-addi $t7, $zero, 3
-addi $t8, $zero, 1
-addi $t9, $zero, 4
-sw $t0, ($gp)
-sw $t1, 4($gp)
-sw $t2, 8($gp)
-sw $t3, 12($gp)
-sw $t4, 16($gp)
-sw $t5, 20($gp)
-sw $t6, 24($gp)
-sw $t7, 28($gp)
-sw $t8, 32($gp)
-sw $t9, 36($gp)
-add $s0, $zero, $gp
+addi $sp, $zero, 0x00003ffc
+la $s0, array
 addi $a0, $zero, 0
 addi $a1, $zero, 9
 jal quicksort
@@ -234,3 +215,16 @@ jr $ra
 done:
 addi $v0, $zero, 10
 syscall
+
+.data
+array:
+0x00000009
+0x00000005
+0x00000003
+0x00000006
+0x00000002
+0x00000008
+0x00000007
+0x00000003
+0x00000001
+0x00000004
