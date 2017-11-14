@@ -8,12 +8,12 @@
 
 The goal of this lab is to design, create, and test a 32-bit CPU.
 
-You will work in groups of 2-4. You may shuffle teams if you so choose. You should consider the complexity of processor design (e.g. single-cycle, pipelined) you plan to attempt while forming teams.
+You will work in groups of 2-4. You may shuffle teams if you so choose. You should consider the complexity of processor design (e.g. single-cycle, pipelined) you plan to attempt while forming teams. 
 
 
 ## Work Plan ##
 
-Draft a work plan for this lab, which should include the type of processor you plan to design. Regardless of the final design you choose, we recommend that you start by building a working single-cycle CPU. Break down the lab in to small portions, and for each portion predict how long it will take (in hours) and when it will be done by (date).
+Draft a work plan for this lab, which should include the type of processor you plan to design. Regardless of the final design you choose, we recommend that you start by building a working single-cycle CPU. Break down the lab in to small portions, and for each portion predict how long it will take (in hours) and when it will be done by (date). 
 
 We strongly suggest you include a mid-point check in with course staff in your plan. One good thing to do at this check-in or earlier would be to review your block diagram.
 
@@ -27,8 +27,8 @@ Use your work plan reflections from the previous labs to help with this task. Yo
 Create a 32-bit MIPS-subset CPU that supports (at least) the following instructions:
 
 	LW, SW, J, JR, JAL, BNE, XORI, ADDI, ADD, SUB, SLT
-
-You may choose any processor design style you like (single-cycle, multi-cycle, pipelined) as long as it implements this subset of the ISA.
+    
+You may choose any processor design style you like (single-cycle, multi-cycle, pipelined) as long as it implements this subset of the ISA. 
 
 Every module of Verilog you write must be **commented and tested**.  Running assembly programs only tests the system at a high level – each module needs to be unit tested on its own with a Verilog test bench. Include a master script that runs your entire test suite.
 
@@ -59,7 +59,7 @@ After submitting your test program, you may use any of the programs written by y
 
 **Due: Friday, November 17** by pushing to GitHub and submitting a pull request
  - Verilog and test benches for your processor design
- - Assembly test(s) with README
+ - Assembly test(s) with README 
  - Any necessary scripts
  - Report (PDF or MarkDown), including:
    - Written description and block diagram of your processor architecture. Consider including selected RTL to capture how instructions are implemented.
@@ -69,20 +69,20 @@ After submitting your test program, you may use any of the programs written by y
 
 
 Each team will also demo their work in class after break.
-
+ 
 
 ## Notes/Hints ##
 
 ### Design Reuse ###
 You may freely reuse code created for previous labs, even code written by another team or the instructors. Reusing code does not change your obligation to understand it and provide appropriate test benches.
 
-**Each example of reuse should be documented.**
+**Each example of reuse should be documented.** 
 
 ### Synthesis ###
 You are **not** required to implement your design on FPGA. You may want to synthesize your design (or parts of it) with Vivado to collect performance/area data.
 
 ### Assembling ###
-[MARS](http://courses.missouristate.edu/kenvollmar/mars/) is a very nice assembler. It allows you to see the machine code (actual bits) of the instructions, which is useful for debugging.
+[MARS](http://courses.missouristate.edu/kenvollmar/mars/) is a very nice assembler. It allows you to see the machine code (actual bits) of the instructions, which is useful for debugging. 
 
 
 ### Psuedo-Instructions ###
@@ -101,17 +101,17 @@ module memory
   input[31:0] DataIn,
   output[31:0]  DataOut
 );
-
+  
   reg [31:0] mem[1023:0];  
-
+  
   always @(posedge clk) begin
     if (regWE) begin
       mem[Addr] <= DataIn;
     end
   end
-
+  
   initial $readmemh(“file.dat”, mem);
-
+    
   assign DataOut = mem[Addr];
 endmodule
 ```
@@ -125,3 +125,4 @@ This memory initialization only works in simulation; it will be ignored by Vivad
 In MARS, go to "Settings -> Memory Configuration".  Changing this to "Compact, Text at Address 0" will give you a decent memory layout to start with.  This will put your program (text) at address `0`, your data at address `0x1000`, and your stack pointer will start at `0x3ffc`.
 
 You will need to manually set your stack pointer in your Verilog simulation.  This is done automatically for you in MARS.
+
