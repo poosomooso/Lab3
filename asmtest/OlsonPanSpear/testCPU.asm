@@ -9,3 +9,9 @@ incrementBoth:
 jumpAndCheck:
 	jal incrementBoth
 	bne $a0, $a1, incrementBoth
+#------------------------------------------------------------------------------
+# Jump loop to end execution, so we don't fall through to .data section
+program_end:
+	j    program_end
+
+	
