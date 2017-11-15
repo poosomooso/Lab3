@@ -21,7 +21,7 @@ module InstructionDecoder (
 always @(instruction) begin
 	opcode = instruction[31:26];
 
-	casez(opcode)
+	casex(opcode)
 		`rtype: begin
 			rs = instruction[25:21];
 			rt = instruction[20:16];

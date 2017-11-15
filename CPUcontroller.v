@@ -1,60 +1,163 @@
-module CPUcontroller(instruction, clk, ALU0, ALU1, ALU2, ALU3, mux1, mux2, mux3, op, PCmux);
-	input [31:0] instruction;
+
+/*
+
+add:	000000 100000
+addi:	001000
+sub:	000000 100011
+j		000010
+jal:	000011
+jr:		000000 001000
+bne:	000101
+xori:	001110
+sw:		101011
+lw:		100011
+slt:	000000 101010
+
+*/
+`define arith 	6'b000000
+`define addi 	6'b001000
+`define j 		6'b000010
+`define jal		6'b000011
+`define bne		6'b000101
+`define xori	6'b001110
+`define sw		6'b101011
+`define lw		6'b100011
+
+`define add 	6'b100000
+`define sub 	6'b100011
+`define jr 		6'b001000
+`define slt 	6'b101010
+
+
+module CPUcontroller(opcode, funct, ALU0, ALU1, ALU2, ALU3, mux1, mux2, mux3, writeback, PCmux);
+	input [5:0] opcode, funct;
 	output [2:0] ALU0, ALU1, ALU2, ALU3;
-	output mux1, op;
+	output mux1, writeback; // writeback chooses where the output goes
 	output [1:0] mux2, mux3, PCmux;
+	output reg_we, dm_we;
 	
-	wire [25:0] address;
-	wire [15:0] immediate;
-	wire [5:0] opcode, funct;
-	wire [4:0] rs, rt, rd, shamt;
-	reg [3:0] action_type;
-	reg [5:0] counter;
-	
-	assign opcode = instruction[31:26];
-	assign rs = instruction[25:21];
-	assign rt = instruction[20:16];
-	assign rd = instruction[15:11];
-	assign shamt = instruction[10:6];
-	assign funct = instruction[5:0];
-	assign immediate = instruction[15:0];
-	assign address = instruction[25:0];
-	
-	always @ (posedge clk)
-		if (counter == 0 && {Conditions for J}) begin
-			counter <= 1;
-			action_type <= 4'b0001;
-		end else if (counter == 0 && {Conditions for BNE}) begin
-			counter <= 1;
-			action_type <= 4'b0010;
-		end else if (counter == 0 && {Conditions for JAL}) begin
-			counter <= 1;
-			action_type <= 4'b0011;
-		end else if (counter == 0 && {Conditions for Add}) begin
-			counter <= 1;
-			action_type <= 4'b0100;
-		end else if (counter == 0 && {Conditions for Addi}) begin
-			counter <= 1;
-			action_type <= 4'b0101;
-		end else if (counter == 0 && {Conditions for Xori}) begin
-			counter <= 1;
-			action_type <= 4'b0110;
-		end else if (counter == 0 && {Conditions for LW}) begin
-			counter <= 1;
-			action_type <= 4'b0111;
-		end else if (counter == 0 && {Conditions for SW}) begin
-			counter <= 1;
-			action_type <= 4'b1000;
-		end else if (counter == 0 && {Conditions for JR}) begin
-			counter <= 1;
-			action_type <= 4'b1001;
-		end else if (counter == 0 && {Conditions for Sub}) begin
-			counter <= 1;
-			action_type <= 4'b1010;
-		end else if (counter == 0 && {Conditions for SLT}) begin
-			counter <= 1;
-			action_type <= 4'b1011;
-		end else if (counter == {ceiling}) begin
-			counter <= 0;
-			action_type <= 0;
+	//for adders
+	assign ALU0 <= opADD; 
+	assign ALU1 <= opADD;
+	assign ALU2 <= opADD;
+
+	always @ (*) begin
+
+		case(opcode)
+			`addi: begin
+				mux1 <= 1'd1;
+				mux2 <= 2'd2;
+				mux3 <= 2'd0;
+				PCmux <= 2'd1;
+				reg_we <= 1'd1;
+				dm_we<= 1'd0;
+				writeback <= 1'd0;
+				ALU3 <= opADD;
+			end
+			`j: begin
+				// mux1 <= 1'd1;
+				// mux2 <= 2'd2;
+				// mux3 <= 2'd0;
+				PCmux <= 2'd2;
+				reg_we <= 1'd0;
+				dm_we<= 1'd0;
+				// writeback <= 1'd0;
+				// ALU3 <= opADD;
+			end
+			`jal: begin
+				mux1 <= 1'd0;
+				// mux2 <= 2'd2;
+				// mux3 <= 2'd0;
+				PCmux <= 2'd2;
+				reg_we <= 1'd1;
+				dm_we<= 1'd0;
+				// writeback <= 1'd0;
+				// ALU3 <= opADD;
+			end
+			`bne: begin
+				// mux1 <= 1'd1;
+				// mux2 <= 2'd2;
+				// mux3 <= 2'd0;
+				PCmux <= 2'd2;
+				reg_we <= 1'd0;
+				dm_we<= 1'd0;
+				// writeback <= 1'd0;
+				ALU3 <= opSUB;
+			end
+			`xori: begin
+				mux1 <= 1'd1;
+				mux2 <= 2'd2;
+				mux3 <= 2'd1;
+				PCmux <= 2'd1;
+				reg_we <= 1'd1;
+				dm_we<= 1'd0;
+				writeback <= 1'd0;
+				ALU3 <= opXOR;
+			end
+			`sw: begin
+				// mux1 <= 1'd1;
+				mux2 <= 2'd2;
+				// mux3 <= 2'd0;
+				PCmux <= 2'd1;
+				reg_we <= 1'd0;
+				dm_we<= 1'd1;
+				// writeback <= 1'd0;
+				ALU3 <= opADD;
+			end
+			`lw: begin
+				mux1 <= 1'd1;
+				// mux2 <= 2'd2;
+				mux3 <= 2'd0;
+				PCmux <= 2'd1;
+				reg_we <= 1'd1;
+				dm_we<= 1'd0;
+				writeback <= 1'd1;
+				ALU3 <= opADD;
+			end
+			`arith: begin
+				case(funct)
+					`add: begin
+						mux1 <= 1'd1;
+						mux2 <= 2'd0;
+						mux3 <= 2'd1;
+						PCmux <= 2'd1;
+						reg_we <= 1'd1;
+						dm_we<= 1'd0;
+						writeback <= 1'd0;
+						ALU3 <= opADD;
+					end
+					`sub: begin
+						mux1 <= 1'd1;
+						mux2 <= 2'd0;
+						mux3 <= 2'd1;
+						PCmux <= 2'd1;
+						reg_we <= 1'd1;
+						dm_we<= 1'd0;
+						writeback <= 1'd0;
+						ALU3 <= opSUB;
+					end
+					`jr: begin
+						// mux1 <= 1'd1;
+						// mux2 <= 2'd2;
+						// mux3 <= 2'd0;
+						PCmux <= 2'd0;
+						reg_we <= 1'd0;
+						dm_we<= 1'd0;
+						// writeback <= 1'd0;
+						// ALU3 <= opADD;
+					end
+					`slt: begin
+						mux1 <= 1'd1;
+						mux2 <= 2'd0;
+						mux3 <= 2'd1;
+						PCmux <= 2'd1;
+						reg_we <= 1'd1;
+						dm_we<= 1'd0;
+						writeback <= 1'd0;
+						ALU3 <= opSLT;
+					end
+
+			end
+	end
 		
+endmodule
