@@ -14,14 +14,12 @@ module CPU (
 	output[1023:0] registers
 );
 
-reg we_on = 0'b1;
-reg we_off = 0'b0;
+reg we_on = 1'b1;
+reg we_off = 1'b0;
 
-// pc & instruction mem
 wire[31:0] pc_next, pc_curr;
 wire[31:0] instruction;
-// instruction decoder
-wire[31:0] instruction;
+
 wire[5:0] opcode;
 wire[4:0] rs;
 wire[4:0] rt;
@@ -30,30 +28,32 @@ wire[15:0] imm;
 wire[25:0] addr;
 wire[5:0] funct;
 
-dff pc #(32) (
+dff #(32) pc (
 	.clk(clk),   
 	.ce(we_on),
 	.dataIn(pc_next),
 	.dataOut(pc_curr));
 
-wire [31:0] alu1Out;	
-	
-ALU alu1 (
-	.result(alu1Out),
-	.carryout(oneBitThrowaway),
-	.zero(oneBitThrowaway),
-	.overflow(oneBitThrowaway),
-	.operandA(pc_curr),
-	.operandB(32'b4),
-	.command(alu1Slt));
+wire [31:0] pcPlus4;
+assign pcPlus4 = pc_curr + 4;
 
-instruction_memory instr_mem (
+	
+// ALU alu1 (
+// 	.result(pcPlus4),
+// 	.carryout(oneBitThrowaway),
+// 	.zero(oneBitThrowaway),
+// 	.overflow(oneBitThrowaway),
+// 	.operandA(pc_curr),
+// 	.operandB(32'b4),
+// 	.command(alu1op));
+
+instruction_memory instrMem (
 	.regWE(we_off),
 	.Addr(pc_curr),
 	.DataIn(32'b0),
 	.DataOut(instruction));
 
-instructiondecoder instr_decoder (
+InstructionDecoder instrDecoder (
 	.instruction(instruction),
 	.opcode(opcode),
 	.rs(rs),
@@ -63,8 +63,7 @@ instructiondecoder instr_decoder (
 	.addr(addr),
 	.funct(funct));
 
-// controller
-wire [2:0] alu0Slt, alu1Slt, alu2Slt, alu3Slt;
+wire [2:0] alu0op, alu1op, mainAluop, alu3op;
 wire mux1, writeback;
 wire [1:0] mux2, mux3, PCmux;
 wire reg_we, dm_we;
@@ -72,10 +71,10 @@ wire reg_we, dm_we;
 CPUcontroller controller (
 	.opcode(opcode),
 	.funct(funct),
-	.ALU0(alu0Slt),
-	.ALU1(alu1Slt),
-	.ALU2(alu2Slt),
-	.ALU3(alu3Slt),
+	.ALU0(alu0op),
+	.ALU1(alu1op),
+	.ALU2(alu3op),
+	.ALU3(mainAluop),
 	.mux1(mux1),
 	.mux2(mux2),
 	.mux3(mux3),
@@ -84,119 +83,124 @@ CPUcontroller controller (
 	.reg_we(reg_we),
 	.dm_we(dm_we));
 
-wire[31:0] ra;
-wire[31:0] rb;
-wire[31:0] rw;
-wire[4:0] rs;
-wire[4:0] rt;
-wire[4:0] rd;
+wire[31:0] dataA;
+wire[31:0] dataB;
+wire[31:0] dataWrite;
+wire[31:0] writebackData;
+wire[4:0] writeRegister;
 wire[4:0] throwaway;
 
-fourToOneMux #(.DATA_WIDTH(5)) multiplexer3(
-	.out(WriteRegister),
+fourToOneMux #(.DATA_WIDTH(5)) dwRegIn(
+	.out(writeRegister),
 	.in1(rt),
 	.in2(rd),
-	//.in3(WHAT GOES HERE?)
+	.in3(5'd31), //for jal
 	.in4(throwaway),
 	.slt(mux3));
 
-twoToOneMux multiplexer1(
-	.out(WriteData),
-	.in1(alu3Out),
-	.in2(writebackOut),
-	.slt(mux1));
-	
-regfile register_file (
-	.ReadData1(ReadData1),
-	.ReadData2(ReadData2),
+regfile registerFile (
+	.ReadData1(dataA),
+	.ReadData2(dataB),
 	.AllOutputs(registers),
-	.WriteData(WriteData),
+	.WriteData(dataWrite),
 	.ReadRegister1(rs),
 	.ReadRegister2(rt),
-	.WriteRegister(WriteRegister),
+	.WriteRegister(writeRegister),
 	.RegWrite(reg_we),
 	.Clk(clk));
-	
-twoToOneMux opMultiplexer (
-	.out(opOut),
-	.in1(alu3Out),
-	.in2(dmOut),
-	.slt(writebackOut));
-	
+
 wire [31:0] thirtyTwoBitThrowaway;
 wire [31:0] signExtendImmediate;
+wire [31:0] zeroExtendImmediate;
+assign zeroExtendImmediate = {16'b0, imm};
+wire [31:0] operandB;
 	
-fourToOneMux multiplexer2 (
-	.out(mux2Out),
-	.in1(ReadData2),
-	.in2(immediate),
+fourToOneMux operand2Mux (
+	.out(operandB),
+	.in1(dataB),
+	.in2(zeroExtendImmediate),
 	.in3(signExtendImmediate),
 	.in4(thirtyTwoBitThrowaway),
 	.slt(mux2));
 	
 wire oneBitThrowaway;
 wire [2:0] alu3SLT;
+wire [31:0] mainAluOut;
 
-ALU alu2 (
-	.result(alu2Out),
+ALU mainAlu (
+	.result(mainAluOut),
 	.carryout(oneBitThrowaway),
 	.zero(mux0),
 	.overflow(oneBitThrowaway),
-	.operandA(ReadData1),
-	.operandB(mux2Out),
-	.command(alu2SLT));
+	.operandA(dataA),
+	.operandB(operandB),
+	.command(mainAluop));
 
 datamemory dm (
 	.clk(clk),
 	.dataOut(dmOut),
-	.address(alu3Out),
+	.address(mainAluOut),
 	.writeEnable(dm_we),
-	.dataIn(ReadData2));
+	.dataIn(dataB));
+	
+twoToOneMux opMultiplexer (
+	.out(writebackData),
+	.in1(mainAluOut),
+	.in2(dmOut),
+	.slt(writeback));
+
+twoToOneMux dataWriteMux(
+	.out(dataWrite),
+	.in1(pcPlus8),
+	.in2(writebackData),
+	.slt(mux1));
 	
 signextend signExtender (
 	.a(imm),
 	.result(signExtendImmediate));
 	
-wire [33:0] signExtendImmediate;
-	
-assign concatSignExtend = {signExtendImmediate, 2'b00);
+assign concatSignExtend = {signExtendImmediate[29:0], 2'b00};
 
-wire [33:0] mux0Out;
+wire [31:0] instrOffset;
 
-twoToOneMux multiplexer0 (
-	.out(mux0Out),
+twoToOneMux instrOffsetMux (
+	.out(instrOffset),
 	.in1(concatSignExtend),
 	.in2(34'b0),
 	.slt(mux0));
 	
 wire [31:0] alu0Out;
 	
-ALU alu0 (
-	.result(alu0Out),
-	.carryout(oneBitThrowaway),
-	.zero(oneBitThrowaway),
-	.overflow(oneBitThrowaway),
-	.operandA(alu1Out),
-	.operandB(mux0Out),
-	.command(alu0Slt));
+// ALU alu0 (
+// 	.result(alu0Out),
+// 	.carryout(oneBitThrowaway),
+// 	.zero(oneBitThrowaway),
+// 	.overflow(oneBitThrowaway),
+// 	.operandA(pcPlus4),
+// 	.operandB(instrOffset),
+// 	.command(alu0op));
 	
-assign pcMuxIn2 = {alu1Out, instruction[25:0], 2'b0};
+assign jumpAddr = {pcPlus4[31:28], instruction[25:0], 2'b0};
 	
 fourToOneMux pcMux (
 	.out(pcMuxOut),
-	.in1(ReadData1),
-	.in2(pcMuxIn2),
-	.in3(alu0Out),
+	.in1(dataA),
+	.in2(jumpAddr),
+	.in3(pcPlus4 + instrOffset),
 	.in4(thirtyTwoBitThrowaway),
 	.slt(PCMux));
 	
-ALU alu3 (
-	.result(alu3Out),
-	.carryout(oneBitThrowaway),
-	.zero(oneBitThrowaway),
-	.overflow(oneBitThrowaway),
-	.operandA(32'b4),
-	.operandB(alu1Out),
-	.command(alu3Slt));
+wire [31:0] pcPlus8;
+assign pcPlus8 = pcPlus4 + 4;
+
+// ALU alu3 (
+// 	.result(pcPlus8),
+// 	.carryout(oneBitThrowaway),
+// 	.zero(oneBitThrowaway),
+// 	.overflow(oneBitThrowaway),
+// 	.operandA(32'b4),
+// 	.operandB(pcPlus4),
+// 	.command(alu3op));
+
 
 endmodule

@@ -1,7 +1,7 @@
 module instruction_memory
 (
   input clk, regWE,
-  input[9:0] Addr,
+  input[31:0] Addr,
   input[31:0] DataIn,
   output[31:0]  DataOut
 );
