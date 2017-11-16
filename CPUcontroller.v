@@ -29,7 +29,7 @@ slt:	000000 101010
 `define slt 	6'b101010
 
 
-module CPUcontroller(opcode, funct, ALU0, ALU1, ALU2, ALU3, mux1, mux2, mux3, writeback, PCmux);
+module CPUcontroller(opcode, funct, ALU0, ALU1, ALU2, ALU3, mux1, mux2, mux3, writeback, PCmux, reg_we, dm_we);
 	input [5:0] opcode, funct;
 	output [2:0] ALU0, ALU1, ALU2, ALU3;
 	output mux1, writeback; // writeback chooses where the output goes

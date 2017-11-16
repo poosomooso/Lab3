@@ -1,5 +1,4 @@
 `include "logic32bits.v"
-`include "adder.v"
 
 `define opADD  3'd0
 `define opSUB  3'd1
