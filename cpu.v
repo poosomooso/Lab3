@@ -2,7 +2,6 @@
 `include "instruction_memory.v"
 `include "instructiondecoder.v"
 `include "CPUcontroller.v"
-`include "adder.v"
 `include "datamemory.v"
 `include "signextend.v"
 `include "regfile.v"
