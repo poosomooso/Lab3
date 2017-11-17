@@ -15,6 +15,7 @@ module regfile
 output[31:0]	ReadData1,		// Contents of first register read
 output[31:0]	ReadData2,		// Contents of second register read
 output[1023:0]	AllOutputs,
+// output reg[31:0] AllOutputs[1023:0]
 input[31:0]		WriteData,		// Contents to write to register
 input[4:0]		ReadRegister1,	// Address of first register to read
 input[4:0]		ReadRegister2,	// Address of second register to read

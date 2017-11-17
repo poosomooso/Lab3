@@ -15,7 +15,10 @@ module instruction_memory
   end
   
 
-  initial $readmemh("file.dat", mem);
+  initial begin
+  $readmemh("mem.dat", mem);
+  $display("mem: %h",mem[0]);
+end
     
   assign DataOut = mem[Addr];
 endmodule

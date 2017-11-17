@@ -3,7 +3,6 @@
 `include "instructiondecoder.v"
 `include "CPUcontroller.v"
 `include "adder.v"
-`include "alu.v"
 `include "datamemory.v"
 `include "signextend.v"
 `include "regfile.v"
@@ -11,7 +10,8 @@
 
 module CPU (
 	input clk,
-	output[1023:0] registers
+	output [1023:0] registers
+	// output reg[31:0] registers[1023:0]
 );
 
 reg we_on = 1'b1;
@@ -28,7 +28,7 @@ wire[15:0] imm;
 wire[25:0] addr;
 wire[5:0] funct;
 
-dff #(32) pc (
+PCReg #(32) pc (
 	.clk(clk),   
 	.ce(we_on),
 	.dataIn(pc_next),
@@ -36,16 +36,6 @@ dff #(32) pc (
 
 wire [31:0] pcPlus4;
 assign pcPlus4 = pc_curr + 4;
-
-	
-// ALU alu1 (
-// 	.result(pcPlus4),
-// 	.carryout(oneBitThrowaway),
-// 	.zero(oneBitThrowaway),
-// 	.overflow(oneBitThrowaway),
-// 	.operandA(pc_curr),
-// 	.operandB(32'b4),
-// 	.command(alu1op));
 
 instruction_memory instrMem (
 	.regWE(we_off),
@@ -64,7 +54,7 @@ InstructionDecoder instrDecoder (
 	.funct(funct));
 
 wire [2:0] alu0op, alu1op, mainAluop, alu3op;
-wire mux1, writeback;
+wire mux1, writeback, notBNE;
 wire [1:0] mux2, mux3, PCmux;
 wire reg_we, dm_we;
 
@@ -75,11 +65,12 @@ CPUcontroller controller (
 	.ALU1(alu1op),
 	.ALU2(alu3op),
 	.ALU3(mainAluop),
+	.PCmux(PCmux),
+	.notBNE(notBNE),
 	.mux1(mux1),
 	.mux2(mux2),
 	.mux3(mux3),
 	.writeback(writeback),
-	.PCmux(PCmux),
 	.reg_we(reg_we),
 	.dm_we(dm_we));
 
@@ -126,17 +117,23 @@ fourToOneMux operand2Mux (
 wire oneBitThrowaway;
 wire [2:0] alu3SLT;
 wire [31:0] mainAluOut;
+wire [31:0] dmOut;
+wire offsetMuxSelect;
 
 ALU mainAlu (
 	.result(mainAluOut),
 	.carryout(oneBitThrowaway),
-	.zero(mux0),
+	.zero(offsetMuxSelect),
 	.overflow(oneBitThrowaway),
 	.operandA(dataA),
 	.operandB(operandB),
 	.command(mainAluop));
 
-datamemory dm (
+datamemory #(
+    .addresswidth(32),
+    .depth(1023),
+    .width(32)
+    ) dm (
 	.clk(clk),
 	.dataOut(dmOut),
 	.address(mainAluOut),
@@ -159,48 +156,31 @@ signextend signExtender (
 	.a(imm),
 	.result(signExtendImmediate));
 	
+wire [31:0] concatSignExtend;
 assign concatSignExtend = {signExtendImmediate[29:0], 2'b00};
 
 wire [31:0] instrOffset;
 
 twoToOneMux instrOffsetMux (
 	.out(instrOffset),
-	.in1(concatSignExtend),
-	.in2(34'b0),
-	.slt(mux0));
+	.in1(34'b0),
+	.in2(concatSignExtend),
+	.slt(offsetMuxSelect || notBNE));
 	
 wire [31:0] alu0Out;
 	
-// ALU alu0 (
-// 	.result(alu0Out),
-// 	.carryout(oneBitThrowaway),
-// 	.zero(oneBitThrowaway),
-// 	.overflow(oneBitThrowaway),
-// 	.operandA(pcPlus4),
-// 	.operandB(instrOffset),
-// 	.command(alu0op));
-	
+wire [31:0] jumpAddr;
 assign jumpAddr = {pcPlus4[31:28], instruction[25:0], 2'b0};
 	
 fourToOneMux pcMux (
-	.out(pcMuxOut),
+	.out(pc_next),
 	.in1(dataA),
 	.in2(jumpAddr),
 	.in3(pcPlus4 + instrOffset),
 	.in4(thirtyTwoBitThrowaway),
-	.slt(PCMux));
+	.slt(PCmux));
 	
 wire [31:0] pcPlus8;
 assign pcPlus8 = pcPlus4 + 4;
-
-// ALU alu3 (
-// 	.result(pcPlus8),
-// 	.carryout(oneBitThrowaway),
-// 	.zero(oneBitThrowaway),
-// 	.overflow(oneBitThrowaway),
-// 	.operandA(32'b4),
-// 	.operandB(pcPlus4),
-// 	.command(alu3op));
-
 
 endmodule

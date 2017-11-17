@@ -1,12 +1,5 @@
-//------------------------------------------------------------------------
-// Shift Register
-//   Parameterized width (in bits)
-//   Shift register can operate in two modes:
-//      - serial in, parallel out
-//      - parallel in, serial out
-//------------------------------------------------------------------------
 
-module dff
+module PCReg
 #(parameter width = 8)
 (
 input               clk,                // FPGA Clock
@@ -15,8 +8,15 @@ input  [width-1:0]  dataIn,     // Load shift reg in parallel
 output [width-1:0]  dataOut     // Shift reg data contents
 );
 
-    reg [width-1:0]      mem;
+    reg [width-1:0]     mem;
+    reg [width-1:0]     zero;
+
+    initial begin
+        mem <= {(width) {1'b0}};
+    end
+
     always @(posedge clk) begin
+        $display("pc: %b",dataOut);
         if (ce == 1)
             mem <= dataIn;
     end
