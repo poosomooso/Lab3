@@ -11,7 +11,9 @@ initial clk=0;
 always #5 clk=!clk;
 
 initial begin
-	
+    $dumpfile("cpu.vcd");
+    $dumpvars(0,dut);
+
 	#100
 
 	$display("%b", registers);

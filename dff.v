@@ -16,7 +16,7 @@ output [width-1:0]  dataOut     // Shift reg data contents
     end
 
     always @(posedge clk) begin
-        $display("pc: %b",dataOut);
+        $display("pc: %h",dataOut);
         if (ce == 1)
             mem <= dataIn;
     end

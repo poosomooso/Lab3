@@ -13,6 +13,10 @@ module CPU (
 	// output reg[31:0] registers[1023:0]
 );
 
+always @(posedge clk) begin
+	$display("------------------------------------------------");
+end
+
 reg we_on = 1'b1;
 reg we_off = 1'b0;
 
@@ -37,6 +41,7 @@ wire [31:0] pcPlus4;
 assign pcPlus4 = pc_curr + 4;
 
 instruction_memory instrMem (
+	.clk(clk),
 	.regWE(we_off),
 	.Addr(pc_curr),
 	.DataIn(32'b0),
@@ -52,23 +57,20 @@ InstructionDecoder instrDecoder (
 	.addr(addr),
 	.funct(funct));
 
-wire [2:0] alu0op, alu1op, mainAluop, alu3op;
-wire mux1, writeback, notBNE;
-wire [1:0] mux2, mux3, PCmux;
+wire [2:0] mainAluop;
+wire dataWriteMuxSlt, writeback, notBNE;
+wire [1:0] operand2MuxSlt, regWriteAddrSlt, PCmux;
 wire reg_we, dm_we;
 
 CPUcontroller controller (
 	.opcode(opcode),
 	.funct(funct),
-	.ALU0(alu0op),
-	.ALU1(alu1op),
-	.ALU2(alu3op),
 	.ALU3(mainAluop),
 	.PCmux(PCmux),
 	.notBNE(notBNE),
-	.mux1(mux1),
-	.mux2(mux2),
-	.mux3(mux3),
+	.dataWriteMuxSlt(dataWriteMuxSlt),
+	.operand2MuxSlt(operand2MuxSlt),
+	.regWriteAddrSlt(regWriteAddrSlt),
 	.writeback(writeback),
 	.reg_we(reg_we),
 	.dm_we(dm_we));
@@ -86,7 +88,7 @@ fourToOneMux #(.DATA_WIDTH(5)) dwRegIn(
 	.in2(rd),
 	.in3(5'd31), //for jal
 	.in4(throwaway),
-	.slt(mux3));
+	.slt(regWriteAddrSlt));
 
 regfile registerFile (
 	.ReadData1(dataA),
@@ -111,7 +113,7 @@ fourToOneMux operand2Mux (
 	.in2(zeroExtendImmediate),
 	.in3(signExtendImmediate),
 	.in4(thirtyTwoBitThrowaway),
-	.slt(mux2));
+	.slt(operand2MuxSlt));
 	
 wire oneBitThrowaway;
 wire [2:0] alu3SLT;
@@ -149,7 +151,7 @@ twoToOneMux dataWriteMux(
 	.out(dataWrite),
 	.in1(pcPlus8),
 	.in2(writebackData),
-	.slt(mux1));
+	.slt(dataWriteMuxSlt));
 	
 signextend signExtender (
 	.a(imm),
@@ -162,8 +164,8 @@ wire [31:0] instrOffset;
 
 twoToOneMux instrOffsetMux (
 	.out(instrOffset),
-	.in1(34'b0),
-	.in2(concatSignExtend),
+	.in1(concatSignExtend),
+	.in2(32'b0),
 	.slt(offsetMuxSelect || notBNE));
 	
 wire [31:0] alu0Out;

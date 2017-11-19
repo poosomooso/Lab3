@@ -34,9 +34,9 @@ slt:	000000 101010
 
 module CPUcontroller (
 	input [5:0] opcode, funct,
-	output reg [2:0] ALU0, ALU1, ALU2, ALU3, 
-	output reg mux1, writeback, notBNE, // writeback chooses where the output goes
-	output reg [1:0] mux2, mux3, PCmux,
+	output reg [2:0] ALU3, 
+	output reg dataWriteMuxSlt, writeback, notBNE, // writeback chooses where the output goes
+	output reg [1:0] operand2MuxSlt, regWriteAddrSlt, PCmux,
 	output reg reg_we, dm_we
 );
 	
@@ -48,11 +48,11 @@ module CPUcontroller (
 	always @ (*) begin
 
 	$display("opcode: %b",opcode);
-		case(opcode)
+		casex(opcode)
 			`addi: begin
-				mux1 <= 1'd1;
-				mux2 <= 2'd2;
-				mux3 <= 2'd0;
+				dataWriteMuxSlt <= 1'd1;
+				operand2MuxSlt <= 2'd2;
+				regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd2;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
@@ -61,10 +61,10 @@ module CPUcontroller (
 				ALU3 <= `opADD;
 			end
 			`j: begin
-				// mux1 <= 1'd1;
-				// mux2 <= 2'd2;
-				// mux3 <= 2'd0;
-				PCmux <= 2'd2;
+				// dataWriteMuxSlt <= 1'd1;
+				// operand2MuxSlt <= 2'd2;
+				// regWriteAddrSlt <= 2'd0;
+				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd0;
 				dm_we<= 1'd0;
@@ -72,10 +72,10 @@ module CPUcontroller (
 				// ALU3 <= opADD;
 			end
 			`jal: begin
-				mux1 <= 1'd0;
-				// mux2 <= 2'd2;
-				// mux3 <= 2'd0;
-				PCmux <= 2'd2;
+				// dataWriteMuxSlt <= 1'd0;
+				// operand2MuxSlt <= 2'd2;
+				regWriteAddrSlt <= 2'd2;
+				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
 				dm_we<= 1'd0;
@@ -83,9 +83,9 @@ module CPUcontroller (
 				// ALU3 <= opADD;
 			end
 			`bne: begin
-				// mux1 <= 1'd1;
-				// mux2 <= 2'd2;
-				// mux3 <= 2'd0;
+				// dataWriteMuxSlt <= 1'd1;
+				// operand2MuxSlt <= 2'd2;
+				// regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd2;
 				notBNE<=1'd0;
 				reg_we <= 1'd0;
@@ -94,9 +94,9 @@ module CPUcontroller (
 				ALU3 <= `opSUB;
 			end
 			`xori: begin
-				mux1 <= 1'd1;
-				mux2 <= 2'd2;
-				mux3 <= 2'd1;
+				dataWriteMuxSlt <= 1'd1;
+				operand2MuxSlt <= 2'd2;
+				regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
@@ -105,9 +105,9 @@ module CPUcontroller (
 				ALU3 <= `opXOR;
 			end
 			`sw: begin
-				// mux1 <= 1'd1;
-				mux2 <= 2'd2;
-				// mux3 <= 2'd0;
+				// dataWriteMuxSlt <= 1'd1;
+				operand2MuxSlt <= 2'd2;
+				// regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd0;
@@ -116,9 +116,9 @@ module CPUcontroller (
 				ALU3 <= `opADD;
 			end
 			`lw: begin
-				mux1 <= 1'd1;
-				// mux2 <= 2'd2;
-				mux3 <= 2'd0;
+				dataWriteMuxSlt <= 1'd1;
+				operand2MuxSlt <= 2'd2;
+				regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
@@ -129,9 +129,9 @@ module CPUcontroller (
 			`arith: begin
 				case(funct)
 					`add: begin
-						mux1 <= 1'd1;
-						mux2 <= 2'd0;
-						mux3 <= 2'd1;
+						dataWriteMuxSlt <= 1'd1;
+						operand2MuxSlt <= 2'd0;
+						regWriteAddrSlt <= 2'd1;
 						PCmux <= 2'd1;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
@@ -140,9 +140,9 @@ module CPUcontroller (
 						ALU3 <= `opADD;
 					end
 					`sub: begin
-						mux1 <= 1'd1;
-						mux2 <= 2'd0;
-						mux3 <= 2'd1;
+						dataWriteMuxSlt <= 1'd1;
+						operand2MuxSlt <= 2'd0;
+						regWriteAddrSlt <= 2'd1;
 						PCmux <= 2'd1;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
@@ -151,9 +151,9 @@ module CPUcontroller (
 						ALU3 <= `opSUB;
 					end
 					`jr: begin
-						// mux1 <= 1'd1;
-						// mux2 <= 2'd2;
-						// mux3 <= 2'd0;
+						// dataWriteMuxSlt <= 1'd1;
+						// operand2MuxSlt <= 2'd2;
+						// regWriteAddrSlt <= 2'd0;
 						PCmux <= 2'd0;
 						notBNE<=1'd1;
 						reg_we <= 1'd0;
@@ -162,9 +162,9 @@ module CPUcontroller (
 						// ALU3 <= opADD;
 					end
 					`slt: begin
-						mux1 <= 1'd1;
-						mux2 <= 2'd0;
-						mux3 <= 2'd1;
+						dataWriteMuxSlt <= 1'd1;
+						operand2MuxSlt <= 2'd0;
+						regWriteAddrSlt <= 2'd1;
 						PCmux <= 2'd1;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
@@ -174,6 +174,10 @@ module CPUcontroller (
 					end
 				endcase
 
+			end
+			default: begin
+				reg_we <= 1'd0;
+				dm_we<= 1'd0;
 			end
 		endcase
 	end

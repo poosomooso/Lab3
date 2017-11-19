@@ -19,7 +19,7 @@ module InstructionDecoder (
 );
 
 always @(instruction) begin
-	$display("instruction: %b",instruction);
+	$display("instruction: %h",instruction);
 
 	opcode = instruction[31:26];
 

@@ -28,6 +28,7 @@ module register32
     always @(posedge clk) begin
         if(wrenable) begin
             q = d;
+            $display("q: %h, d: %h",q, d);
         end
     end
 
