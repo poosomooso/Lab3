@@ -15,7 +15,6 @@ module regfile
 output[31:0]	ReadData1,		// Contents of first register read
 output[31:0]	ReadData2,		// Contents of second register read
 output[1023:0]	AllOutputs,
-// output reg[31:0] AllOutputs[1023:0]
 input[31:0]		WriteData,		// Contents to write to register
 input[4:0]		ReadRegister1,	// Address of first register to read
 input[4:0]		ReadRegister2,	// Address of second register to read
@@ -33,13 +32,16 @@ wire[31:0] reg0out, reg1out, reg2out, reg3out, reg4out,
 	reg25out, reg26out, reg27out, reg28out, reg29out,
 	reg30out, reg31out;
 
-assign AllOutputs[1023:0] = {reg0out, reg1out, reg2out, reg3out, reg4out, 
-	reg5out, reg6out, reg7out, reg8out, reg9out,
-	reg10out, reg11out, reg12out, reg13out, reg14out, 
-	reg15out, reg16out, reg17out, reg18out, reg19out,
-	reg20out, reg21out, reg22out, reg23out, reg24out, 
-	reg25out, reg26out, reg27out, reg28out, reg29out,
-	reg30out, reg31out};
+assign AllOutputs[1023:0] = {
+reg31out, reg30out, reg29out, reg28out, 
+reg27out, reg26out, reg25out, reg24out, 
+reg23out, reg22out, reg21out, reg20out, 
+reg19out, reg18out, reg17out, reg16out, 
+reg15out, reg14out, reg13out, reg12out, 
+reg11out, reg10out, reg9out, reg8out, 
+reg7out, reg6out, reg5out, reg4out, 
+reg3out, reg2out, reg1out, reg0out };
+
 
 // enable writes
 wire[31:0] regwrenable;
@@ -90,7 +92,7 @@ mux32to1by32 read1Mux (ReadData1, ReadRegister1,
 	reg25out, reg26out, reg27out, reg28out, reg29out,
 	reg30out, reg31out);
 
-mux32to1by32 read2Mux (ReadData1, ReadRegister2, 
+mux32to1by32 read2Mux (ReadData2, ReadRegister2, 
 	reg0out, reg1out, reg2out, reg3out, reg4out, 
 	reg5out, reg6out, reg7out, reg8out, reg9out,
 	reg10out, reg11out, reg12out, reg13out, reg14out, 

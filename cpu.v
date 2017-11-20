@@ -10,7 +10,6 @@
 module CPU (
 	input clk,
 	output [1023:0] registers
-	// output reg[31:0] registers[1023:0]
 );
 
 always @(posedge clk) begin

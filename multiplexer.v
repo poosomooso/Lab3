@@ -34,7 +34,7 @@ endmodule
 
 module mux32to1by32
 (
-output[31:0]  out,
+output reg[31:0]  out,
 input[4:0]    address,
 input[31:0]   input0, input1, input2, input3,
                 input4, input5, input6, input7,
@@ -80,5 +80,13 @@ input[31:0]   input0, input1, input2, input3,
     assign mux[30] = input30;
     assign mux[31] = input31;
     
-    assign out = mux[address];  // Connect the output of the array
+      // Connect the output of the array
+
+    always @(address) begin
+        out = mux[address];
+        // $display("zero: %h %h",mux[0], input0);
+        // $display("address %h",address);
+        // $display("muxout %h",out);
+
+    end
 endmodule

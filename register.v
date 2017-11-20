@@ -28,7 +28,6 @@ module register32
     always @(posedge clk) begin
         if(wrenable) begin
             q = d;
-            $display("q: %h, d: %h",q, d);
         end
     end
 
@@ -41,6 +40,7 @@ module register32zero
     input               wrenable,
     input               clk
 );
+    initial q = 32'b0;
 
     always @(posedge clk) begin
         q = 32'b0;
