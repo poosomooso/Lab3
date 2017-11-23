@@ -96,7 +96,7 @@ module CPUcontroller (
 			end
 			`xori: begin
 				dataWriteMuxSlt <= 1'd1;
-				operand2MuxSlt <= 2'd2;
+				operand2MuxSlt <= 2'd1;
 				regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd2;
 				notBNE<=1'd1;
@@ -166,7 +166,7 @@ module CPUcontroller (
 						dataWriteMuxSlt <= 1'd1;
 						operand2MuxSlt <= 2'd0;
 						regWriteAddrSlt <= 2'd1;
-						PCmux <= 2'd1;
+						PCmux <= 2'd2;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
 						dm_we<= 1'd0;

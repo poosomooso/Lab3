@@ -23,13 +23,14 @@ initial begin
     $dumpfile("cpu.vcd");
     $dumpvars(0,dut);
 
-    for (k=0; k<15; k=k+1) begin
+    for (k=0; k<800; k=k+1) begin
 		#20
 		$display("",);
 	    // for (j=0; j<32; j=j+1) begin
 	    //     $display("reg %d : %h", j, registers2d[j]);
 	    // end
 	end
+	$display("end:",);
 	for (j=0; j<32; j=j+1) begin
         $display("reg %d : %h", j, registers2d[j]);
     end
