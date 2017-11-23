@@ -18,14 +18,19 @@ generate for (i=0; i<32; i=i+1) begin : unpack_reg
 end
 endgenerate
 
-integer j;
+integer j, k;
 initial begin
     $dumpfile("cpu.vcd");
     $dumpvars(0,dut);
 
-	#500
-
-    for (j=0; j<32; j=j+1) begin
+    for (k=0; k<15; k=k+1) begin
+		#20
+		$display("",);
+	    // for (j=0; j<32; j=j+1) begin
+	    //     $display("reg %d : %h", j, registers2d[j]);
+	    // end
+	end
+	for (j=0; j<32; j=j+1) begin
         $display("reg %d : %h", j, registers2d[j]);
     end
 

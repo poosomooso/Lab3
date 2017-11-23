@@ -12,6 +12,7 @@ module fourToOneMux #(parameter DATA_WIDTH = 32) (out,in1,in2,in3,in4,slt);
             2'b10:out = in3;
             2'b11:out = in4;
         endcase
+        // $display("4to1: %b %b %b %b --- %b",in1,in2,in3,in4, out);
     end
 endmodule
 

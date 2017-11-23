@@ -52,6 +52,8 @@ zero_check zcheck_sub(sub_zero, sub_out);
 
 always @(command or operandA or operandB) begin
 #5
+    $display("a: ",operandA);
+    $display("b: ",operandB);
     case(command) 
         `opADD: begin
             result = add_out;
@@ -102,6 +104,7 @@ always @(command or operandA or operandB) begin
             zero = 1'b0;
         end
     endcase
+    $display("res: ",result);
 end
 
 endmodule

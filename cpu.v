@@ -105,6 +105,10 @@ wire [31:0] signExtendImmediate;
 wire [31:0] zeroExtendImmediate;
 assign zeroExtendImmediate = {16'b0, imm};
 wire [31:0] operandB;
+
+signextend signExtender (
+	.a(imm),
+	.result(signExtendImmediate));
 	
 fourToOneMux operand2Mux (
 	.out(operandB),
@@ -152,9 +156,6 @@ twoToOneMux dataWriteMux(
 	.in2(writebackData),
 	.slt(dataWriteMuxSlt));
 	
-signextend signExtender (
-	.a(imm),
-	.result(signExtendImmediate));
 	
 wire [31:0] concatSignExtend;
 assign concatSignExtend = {signExtendImmediate[29:0], 2'b00};

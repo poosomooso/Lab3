@@ -27,7 +27,7 @@ slt:	000000 101010
 `define lw		6'b100011
 
 `define add 	6'b100000
-`define sub 	6'b100011
+`define sub 	6'b100010
 `define jr 		6'b001000
 `define slt 	6'b101010
 
@@ -48,6 +48,7 @@ module CPUcontroller (
 	always @ (*) begin
 
 	$display("opcode: %b",opcode);
+	$display("funct: %b",funct);
 		casex(opcode)
 			`addi: begin
 				dataWriteMuxSlt <= 1'd1;
@@ -97,7 +98,7 @@ module CPUcontroller (
 				dataWriteMuxSlt <= 1'd1;
 				operand2MuxSlt <= 2'd2;
 				regWriteAddrSlt <= 2'd0;
-				PCmux <= 2'd1;
+				PCmux <= 2'd2;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
 				dm_we<= 1'd0;
@@ -108,7 +109,7 @@ module CPUcontroller (
 				// dataWriteMuxSlt <= 1'd1;
 				operand2MuxSlt <= 2'd2;
 				// regWriteAddrSlt <= 2'd0;
-				PCmux <= 2'd1;
+				PCmux <= 2'd2;
 				notBNE<=1'd1;
 				reg_we <= 1'd0;
 				dm_we<= 1'd1;
@@ -119,7 +120,7 @@ module CPUcontroller (
 				dataWriteMuxSlt <= 1'd1;
 				operand2MuxSlt <= 2'd2;
 				regWriteAddrSlt <= 2'd0;
-				PCmux <= 2'd1;
+				PCmux <= 2'd2;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
 				dm_we<= 1'd0;
@@ -132,7 +133,7 @@ module CPUcontroller (
 						dataWriteMuxSlt <= 1'd1;
 						operand2MuxSlt <= 2'd0;
 						regWriteAddrSlt <= 2'd1;
-						PCmux <= 2'd1;
+						PCmux <= 2'd2;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
 						dm_we<= 1'd0;
@@ -143,7 +144,7 @@ module CPUcontroller (
 						dataWriteMuxSlt <= 1'd1;
 						operand2MuxSlt <= 2'd0;
 						regWriteAddrSlt <= 2'd1;
-						PCmux <= 2'd1;
+						PCmux <= 2'd2;
 						notBNE<=1'd1;
 						reg_we <= 1'd1;
 						dm_we<= 1'd0;
@@ -180,6 +181,15 @@ module CPUcontroller (
 				dm_we<= 1'd0;
 			end
 		endcase
+		// $display("dataWriteMuxSlt : %b",dataWriteMuxSlt);
+		// $display("operand2MuxSlt : %b",operand2MuxSlt);
+		// $display("regWriteAddrSlt : %b",regWriteAddrSlt);
+		// $display("PCmux : %b",PCmux);
+		// $display("notBNE : %b",notBNE);
+		// $display("reg_we : %b",reg_we);
+		// $display("dm_we : %b",dm_we);
+		// $display("writeback : %b",writeback);
+		// $display("ALU3 : %b",ALU3);
 	end
 		
 endmodule

@@ -9,9 +9,6 @@ input[4:0]	address
 );
 
     assign out = enable<<address; 
-    always @(out) begin
-    	$display("decoderout: %b",out);
-    end
 
 endmodule
 
