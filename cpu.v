@@ -115,7 +115,7 @@ fourToOneMux operand2Mux (
 	.in1(dataB),
 	.in2(zeroExtendImmediate),
 	.in3(signExtendImmediate),
-	.in4(thirtyTwoBitThrowaway),
+	.in4(32'd10),
 	.slt(operand2MuxSlt));
 	
 wire oneBitThrowaway;
@@ -135,7 +135,7 @@ ALU mainAlu (
 
 datamemory #(
     .addresswidth(32),
-    .depth(1023),
+    .depth(600000),
     .width(32)
     ) dm (
 	.clk(clk),
@@ -152,7 +152,7 @@ twoToOneMux opMultiplexer (
 
 twoToOneMux dataWriteMux(
 	.out(dataWrite),
-	.in1(pcPlus8),
+	.in1(pcPlus4),
 	.in2(writebackData),
 	.slt(dataWriteMuxSlt));
 	
@@ -178,7 +178,7 @@ fourToOneMux pcMux (
 	.in1(dataA),
 	.in2(jumpAddr),
 	.in3(pcPlus4 + instrOffset),
-	.in4(thirtyTwoBitThrowaway),
+	.in4(32'd00),
 	.slt(PCmux));
 	
 wire [31:0] pcPlus8;

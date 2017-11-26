@@ -23,6 +23,18 @@ input			RegWrite,		// Enable writing of register when High
 input			Clk				// Clock (Positive Edge Triggered)
 );
 
+// always @(WriteData or WriteRegister) begin
+// 	$display("WriteRegister: %d WriteData: %h", WriteRegister, WriteData);
+// end
+
+always @(posedge Clk) begin
+	$display("clk -- WriteRegister: %d WriteData: %h", WriteRegister, WriteData);
+end
+
+always @(ReadRegister2 or ReadData2) begin
+	$display("reg: %d data2: %h",ReadRegister2, ReadData2);
+end
+
 //outputs
 wire[31:0] reg0out, reg1out, reg2out, reg3out, reg4out, 
 	reg5out, reg6out, reg7out, reg8out, reg9out,
@@ -76,8 +88,8 @@ register32 reg24 (reg24out, WriteData, regwrenable[24], Clk);
 register32 reg25 (reg25out, WriteData, regwrenable[25], Clk);
 register32 reg26 (reg26out, WriteData, regwrenable[26], Clk);
 register32 reg27 (reg27out, WriteData, regwrenable[27], Clk);
-register32 reg28 (reg28out, WriteData, regwrenable[28], Clk);
-register32 reg29 (reg29out, WriteData, regwrenable[29], Clk);
+register32 #(.init(32'h1800)) reg28 (reg28out, WriteData, regwrenable[28], Clk);
+register32 #(.init(32'h3ffc)) reg29 (reg29out, WriteData, regwrenable[29], Clk);
 register32 reg30 (reg30out, WriteData, regwrenable[30], Clk);
 register32 reg31 (reg31out, WriteData, regwrenable[31], Clk);
 

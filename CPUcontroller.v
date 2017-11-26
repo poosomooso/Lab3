@@ -73,7 +73,7 @@ module CPUcontroller (
 				// ALU3 <= opADD;
 			end
 			`jal: begin
-				// dataWriteMuxSlt <= 1'd0;
+				dataWriteMuxSlt <= 1'd0;
 				// operand2MuxSlt <= 2'd2;
 				regWriteAddrSlt <= 2'd2;
 				PCmux <= 2'd1;

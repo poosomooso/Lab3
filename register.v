@@ -16,7 +16,7 @@ input       clk
 
 endmodule
 
-module register32
+module register32 #(parameter init = 32'b0)
 (
 
     output reg[31:0]    q,
@@ -25,6 +25,7 @@ module register32
     input               clk
 );
 
+    initial q = init;
     always @(posedge clk) begin
         if(wrenable) begin
             q = d;
