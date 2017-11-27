@@ -133,11 +133,9 @@ ALU mainAlu (
 	.operandB(operandB),
 	.command(mainAluop));
 
-datamemory #(
-    .addresswidth(32),
-    .depth(600000),
-    .width(32)
-    ) dm (
+datamemory #(.addresswidth(32),
+			 .depth(600000),
+			 .width(32)) dm(
 	.clk(clk),
 	.dataOut(dmOut),
 	.address(mainAluOut),
