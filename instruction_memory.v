@@ -16,7 +16,7 @@ module instruction_memory
   
 
   initial begin
-    $readmemh("C:\Users\bwerth\Documents\GitHub\Lab3\mem.dat", mem);
+    $readmemh("mem.dat", mem);
   end
     
   assign DataOut = mem[Addr>>2];
