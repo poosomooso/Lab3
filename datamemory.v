@@ -25,10 +25,10 @@ module datamemory
     always @(posedge clk) begin
         $display("datamem address: %h",address);
         if(writeEnable) begin
-            memory[address] <= dataIn;
+            memory[address] = dataIn;
             $display("datamem in: %h %h",memory[address], dataIn);
         end
-        dataOut <= memory[address];
+        dataOut = memory[address];
         $display("datamem out: %h",dataOut);
     end
 
