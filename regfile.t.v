@@ -164,21 +164,19 @@ output reg		Clk
     //   All registers should start with their address in their memory
     for (i = 0; i <= 'b11111; i = i + 1) begin
       WriteRegister = i;
-      WriteData = 32'hffffffff;
+      WriteData = 32'hf0000000 + i;
       RegWrite = 1;
       #5 Clk=1; #5 Clk=0;
 
       for (j = 0; j <= 'b11111; j = j + 2) begin
-        if (j != i) begin
-          RegWrite = 0;
-          ReadRegister1 = i;
-          ReadRegister2 = i + 1;
-          #5 Clk=1; #5 Clk=0;
+        RegWrite = 0;
+        ReadRegister1 = j;
+        ReadRegister2 = j + 1;
+        #5 Clk=1; #5 Clk=0;
 
-          if((ReadData1 == i) || (ReadData2 == i)) begin
-            dutpassed = 0;
-            $display("Test Case 4 Failed : value for register %d written to multiple registers", i);
-          end
+        if((j != i && ReadData1 == WriteData) || (j+1 != i && ReadData2 == WriteData)) begin
+          dutpassed = 0;
+          $display("Test Case 4 Failed : value for register %d written to multiple registers", i);
         end
       end
     end

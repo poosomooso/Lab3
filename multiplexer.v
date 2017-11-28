@@ -12,8 +12,6 @@ module fourToOneMux #(parameter DATA_WIDTH = 32) (out,in1,in2,in3,in4,slt);
             2'b10:out = in3;
             2'b11:out = in4;
         endcase
-        // if (in4 == 32'd10)
-        //     $display("4to1: %h %h %h %h --- %h",in1,in2,in3,in4, out);
     end
 endmodule
 
@@ -23,9 +21,6 @@ module twoToOneMux #(parameter DATA_WIDTH = 32) (out,in1,in2,slt);
     input slt;
     
     assign out = slt ? in2 : in1;
-    // always @(*) begin
-    //     $display("2to1: %h %h --- %h",in1,in2, out);
-    // end
 endmodule
 
 module mux32to1by1
@@ -85,13 +80,7 @@ input[31:0]   input0, input1, input2, input3,
     assign mux[30] = input30;
     assign mux[31] = input31;
     
-      // Connect the output of the array
-
     always @(*) begin
         out = mux[address];
-        // $display("zero: %h %h",mux[0], input0);
-        // $display("address %h",address);
-        // $display("muxout %h",out);
-
     end
 endmodule

@@ -11,11 +11,6 @@ module CPU (
 	input clk,
 	output [1023:0] registers
 );
-
-always @(posedge clk) begin
-	$display("------------------------------------------------");
-end
-
 reg we_on = 1'b1;
 reg we_off = 1'b0;
 
