@@ -22,14 +22,14 @@ module datamemory
 
     reg [width-1:0] memory [depth-1:0];
 
+    always @(address or dataIn or clk) begin : proc_
+        dataOut = memory[address];
+    end
+
     always @(posedge clk) begin
-        $display("datamem address: %h",address);
         if(writeEnable) begin
             memory[address] = dataIn;
-            $display("datamem in: %h %h",memory[address], dataIn);
         end
-        dataOut = memory[address];
-        $display("datamem out: %h",dataOut);
     end
 
 endmodule

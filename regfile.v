@@ -23,17 +23,6 @@ input			RegWrite,		// Enable writing of register when High
 input			Clk				// Clock (Positive Edge Triggered)
 );
 
-// always @(WriteData or WriteRegister) begin
-// 	$display("WriteRegister: %d WriteData: %h", WriteRegister, WriteData);
-// end
-
-always @(posedge Clk) begin
-	$display("clk -- WriteRegister: %d WriteData: %h", WriteRegister, WriteData);
-end
-
-always @(ReadRegister2 or ReadData2) begin
-	$display("reg: %d data2: %h",ReadRegister2, ReadData2);
-end
 
 //outputs
 wire[31:0] reg0out, reg1out, reg2out, reg3out, reg4out, 

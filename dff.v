@@ -15,10 +15,6 @@ output [width-1:0]  dataOut     // Shift reg data contents
         mem <= {(width) {1'b0}};
     end
 
-    always @(negedge clk) begin 
-        $display("pc: %h",dataOut);
-    end
-
     always @(posedge clk) begin
         if (ce == 1)
             mem <= dataIn;

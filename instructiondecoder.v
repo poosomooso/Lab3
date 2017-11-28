@@ -19,8 +19,6 @@ module InstructionDecoder (
 );
 
 always @(instruction) begin
-	$display("instruction: %h",instruction);
-
 	opcode = instruction[31:26];
 
 	casex(opcode)

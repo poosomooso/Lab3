@@ -47,8 +47,6 @@ module CPUcontroller (
 
 	always @ (*) begin
 
-	$display("opcode: %b",opcode);
-	$display("funct: %b",funct);
 		casex(opcode)
 			`addi: begin
 				dataWriteMuxSlt <= 1'd1;
@@ -62,36 +60,24 @@ module CPUcontroller (
 				ALU3 <= `opADD;
 			end
 			`j: begin
-				// dataWriteMuxSlt <= 1'd1;
-				// operand2MuxSlt <= 2'd2;
-				// regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd0;
 				dm_we<= 1'd0;
-				// writeback <= 1'd0;
-				// ALU3 <= opADD;
 			end
 			`jal: begin
 				dataWriteMuxSlt <= 1'd0;
-				// operand2MuxSlt <= 2'd2;
 				regWriteAddrSlt <= 2'd2;
 				PCmux <= 2'd1;
 				notBNE<=1'd1;
 				reg_we <= 1'd1;
 				dm_we<= 1'd0;
-				// writeback <= 1'd0;
-				// ALU3 <= opADD;
 			end
 			`bne: begin
-				// dataWriteMuxSlt <= 1'd1;
-				// operand2MuxSlt <= 2'd2;
-				// regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd2;
 				notBNE<=1'd0;
 				reg_we <= 1'd0;
 				dm_we<= 1'd0;
-				// writeback <= 1'd0;
 				ALU3 <= `opSUB;
 			end
 			`xori: begin
@@ -106,14 +92,11 @@ module CPUcontroller (
 				ALU3 <= `opXOR;
 			end
 			`sw: begin
-				// dataWriteMuxSlt <= 1'd1;
 				operand2MuxSlt <= 2'd2;
-				// regWriteAddrSlt <= 2'd0;
 				PCmux <= 2'd2;
 				notBNE<=1'd1;
 				reg_we <= 1'd0;
 				dm_we<= 1'd1;
-				// writeback <= 1'd0;
 				ALU3 <= `opADD;
 			end
 			`lw: begin
@@ -152,15 +135,10 @@ module CPUcontroller (
 						ALU3 <= `opSUB;
 					end
 					`jr: begin
-						// dataWriteMuxSlt <= 1'd1;
-						// operand2MuxSlt <= 2'd2;
-						// regWriteAddrSlt <= 2'd0;
 						PCmux <= 2'd0;
 						notBNE<=1'd1;
 						reg_we <= 1'd0;
 						dm_we<= 1'd0;
-						// writeback <= 1'd0;
-						// ALU3 <= opADD;
 					end
 					`slt: begin
 						dataWriteMuxSlt <= 1'd1;
@@ -181,15 +159,6 @@ module CPUcontroller (
 				dm_we<= 1'd0;
 			end
 		endcase
-		// $display("dataWriteMuxSlt : %b",dataWriteMuxSlt);
-		// $display("operand2MuxSlt : %b",operand2MuxSlt);
-		// $display("regWriteAddrSlt : %b",regWriteAddrSlt);
-		// $display("PCmux : %b",PCmux);
-		// $display("notBNE : %b",notBNE);
-		// $display("reg_we : %b",reg_we);
-		// $display("dm_we : %b",dm_we);
-		// $display("writeback : %b",writeback);
-		// $display("ALU3 : %b",ALU3);
 	end
 		
 endmodule
