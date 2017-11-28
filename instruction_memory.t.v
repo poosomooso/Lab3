@@ -10,7 +10,7 @@ module instruction_memory_test ();
   initial clk=0;
   always #10 clk=!clk;
   
-  instruction_memory im(.clk (clk),.regWE (regWE),.DataIn (DataIn),.Addr (Addr),.DataOut (DataOut));  // Module to be tested
+  fourtoonemux mux(.clk (clk),.regWE (regWE),.DataIn (DataIn),.Addr (Addr),.DataOut (DataOut));  // Module to be tested
   
   task checkTestCase;
   input [31:0] expectedOut;
