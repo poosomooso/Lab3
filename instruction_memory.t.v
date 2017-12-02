@@ -24,9 +24,9 @@ module instruction_memory_test ();
 
   // Run sequence of test stimuli
   initial begin
-    regWE = 1'b1; DataIn = 32'b20; Addr = 32'b20; #20                                 // Set A and B, wait for update (#1)
-    checkTestCase(32'b20); #20
-    regWE = 1'b0; DataIn = 32'b40; Addr = 32'b20; #20    
-    checkTestCase(32'b20); #20
+    regWE = 1'b1; DataIn = 20; Addr = 20; #20                                 // Set A and B, wait for update (#1)
+    checkTestCase(20); #20
+    regWE = 0; DataIn = 40; Addr = 20; #20    
+    checkTestCase(20); #20
   end
 endmodule    // End demorgan_test
