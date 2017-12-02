@@ -9,7 +9,7 @@ module datamemory
 #(
     parameter addresswidth  = 7,
     parameter depth         = 2**addresswidth,
-    parameter width         = 8
+    parameter width         = 32
 )
 (
     input 		                clk,
